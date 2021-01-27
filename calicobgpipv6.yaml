@@ -1,0 +1,7 @@
+apiVersion: projectcalico.org/v3
+kind: BGPPeer
+metadata:
+  name: my-global-peer-ipv6
+spec:
+  peerIP: fc00:1:1:1::2
+  asNumber: 64567

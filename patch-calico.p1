@@ -1,0 +1,33 @@
+--- calico.yaml-original2020-12-18 18:44:45.688583541 +0000
++++ calico.yaml 2020-12-18 22:46:21.625385363 +0000
+@@ -32,7 +32,9 @@
+           "nodename": "__KUBERNETES_NODE_NAME__",
+           "mtu": __CNI_MTU__,
+           "ipam": {
+-              "type": "calico-ipam"
++              "type": "calico-ipam",
++              "assign_ipv4": "true",
++              "assign_ipv6": "true"
+           },
+           "policy": {
+               "type": "k8s"
+@@ -3615,6 +3617,10 @@
+             # Auto-detect the BGP IP address.
+             - name: IP
+               value: "autodetect"
++            - name: IP_AUTODETECTION_METHOD
++              value: "interface=eth1"
++            - name: IP6
++              value: "autodetect"
+             # Enable IPIP
+             - name: CALICO_IPV4POOL_IPIP
+               value: "Always"
+@@ -3652,7 +3658,7 @@
+               value: "ACCEPT"
+             # Disable IPv6 on Kubernetes.
+             - name: FELIX_IPV6SUPPORT
+-              value: "false"
++              value: "true"
+             # Set Felix logging to "info"
+             - name: FELIX_LOGSEVERITYSCREEN
+               value: "info"

@@ -1,0 +1,193 @@
+---
+### configmap index.php
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: index-php-2
+  labels:
+    tier: frontend
+    group: webapplications
+data:
+  config: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <title>Kubernetes /Hello2 </title>
+    </head>
+    <body>
+      <div id="content">
+        <?php echo gethostname(); ?>
+      </div>
+      <div id="content">
+        <?php echo php_uname("n"); ?>
+      </div>
+      <div id="content">
+        <?php echo getenv("COMPUTERNAME"); ?>
+      </div>
+      <div id="content">
+        <?php echo gethostbyaddr($_SERVER["REMOTE_ADDR"]); ?>
+      </div>
+      <div id="content">
+        <?php echo gethostbyaddr($_SERVER["HTTP_CLIENT_IP"]); ?>
+      </div>
+    </body>
+    </html>
+---
+### Nginx Configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config-2
+  labels:
+    tier: backend
+    group: webapplications
+data:
+  config : |
+    server {
+      listen          81;
+      listen          [::]:81;
+      index index.php index.html;
+      error_log  /var/log/nginx/error.log;
+      access_log /var/log/nginx/access.log;
+
+      root /code;
+
+      location / {
+          try_files $uri $uri/ /index.php?$query_string;
+      }
+
+      location ~ \.php$ {
+          try_files $uri =404;
+          fastcgi_split_path_info ^(.+\.php)(/.+)$;
+          fastcgi_pass php-2:9001;
+          fastcgi_index index.php;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param PATH_INFO $fastcgi_path_info;
+        }
+    }
+---
+### Php Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-2
+  labels:
+    app: php-2
+    tier: backend
+    group: webapplications
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: php-2
+      tier: backend
+      group: webapplications
+  template:
+    metadata:
+      labels:
+        app: php-2
+        tier: backend
+        group: webapplications
+    spec:
+      volumes:
+      - name: index
+        configMap:
+          name: index-php-2
+          items:
+          - key: config
+            path: index.php
+      containers:
+      - name: php-2
+        image: php:7-fpm
+        volumeMounts:
+        - name: index
+          mountPath: /code
+---
+### Nginx Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-2
+  labels:
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-2
+      tier: frontend
+      group: webapplications
+  template:
+    metadata:
+      labels:
+        app: nginx-2
+        tier: frontend
+        group: webapplications
+    spec:
+      volumes:
+      - name: index
+        configMap:
+          name: index-php-2
+          items:
+          - key: config
+            path: index.php
+      - name: config
+        configMap:
+          name: nginx-config-2
+          items:
+          - key: config
+            path: site.conf
+      containers:
+      - name: nginx-2
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 81
+        volumeMounts:
+        - name: index
+          mountPath: /code
+        - name: config
+          mountPath: /etc/nginx/conf.d
+---
+### Services PHP
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-2
+  labels:
+    name: php-2-service
+    tier: backend
+    group: webapplications
+spec:
+  ipFamilyPolicy: PreferDualStack
+  selector:
+    app: php-2
+    tier: backend
+    group: webapplications
+  ports:
+  - protocol: TCP
+    port: 9001
+    targetPort: 9000
+---
+### Services NGINX
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-2
+  labels:
+    name: nginx-2-service
+    tier: frontend
+    group: webapplications
+spec:
+  type: NodePort
+  ipFamilies:
+  - IPv4
+  - IPv6
+  ipFamilyPolicy: PreferDualStack
+  selector:
+    app: nginx-2
+    tier: frontend
+    group: webapplications
+  ports:
+  - protocol: TCP
+    port: 81

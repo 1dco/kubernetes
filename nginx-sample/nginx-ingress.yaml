@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+    nginx.org/server-snippets: |
+      proxy_intercept_errors on;
+      error_page 404 = @errorpages;
+      
+      location @errorpages {
+        proxy_set_header X-Code $status;
+        proxy_pass http://default-http-backend.kube-system.svc.cluster.local;
+      }
+spec:
+  rules:
+  - host: "dj.1dco.com"
+    http:
+      paths:
+      - path: /hello1
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /hello2
+        backend:
+          serviceName: nginx-2
+          servicePort: 81
+  - host: "testing.hello.com"
+    http:
+      paths:
+      - path: /h1
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /h2
+        backend:
+          serviceName: nginx-2
+          servicePort: 81

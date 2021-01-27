@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-dep
+  labels:
+    name: sample-dep
+    app: sample-dep
+    group: sample-dep
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: sample-dep
+      app: sample-dep
+      group: sample-dep
+  template:
+    metadata:
+      labels:
+        name: sample-dep
+        app: sample-dep
+        group: sample-dep
+    spec:
+      containers:
+      - name: samplepod
+        command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
+        image: alpine
