@@ -98,7 +98,7 @@ sudo mv calicoctl /usr/local/bin/
 
 in this step, we'll make sure Calico will peer with VyOS by using BGP with Local AS ```64512``` Remote AS ```64567``` , we'll not using calico bgp router reflector, but we'll using node to node mesh configuration, for kubernetes cluster with nodes < 50, shouldn't be an issue.
 
-NodeToNode Mesh meant:
+NodeToNode Mesh means:
 
 > * Master will peer with node1, node2 and VyOS
 > * node1 will peer with master, node2 and VyOS
@@ -177,7 +177,7 @@ sudo calicoctl node status
 
 ## Configure VyOS and enable BGP
 
-next you'll need to configurat VyOS and connect to the kubernetes nodes AS 
+next you'll need to configure VyOS and connect to the kubernetes nodes AS 
 
 **<u>command to run inside vyos</u>**
 
