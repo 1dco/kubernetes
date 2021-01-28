@@ -126,7 +126,13 @@ apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 mode: ipvs
 EOF'
-sudo kubeadm init --config=/vagrant/kubeadm-new.yaml
+
+### to install kubernetes using kubeadm ipvs mode
+#sudo kubeadm init --config=/vagrant/kubeadm-new.yaml
+
+### to install kubernetes using kubeadm iptables mode, standard behavior
+sudo kubeadm init --feature-gates "IPv6DualStack=true" --pod-network-cidr 10.244.0.0/16,fc00::/56 --apiserver-advertise-address 192.168.4.11 --service-cidr 10.96.0.0/12,fc01::/108
+
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
