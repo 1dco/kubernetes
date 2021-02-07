@@ -96,9 +96,9 @@ sudo mv calicoctl /usr/local/bin/
 
 ## Configure Calico to use BGP
 
-in this step, we'll make sure Calico will peer with VyOS by using BGP with Local AS ```64512``` Remote AS ```64567``` , we'll not using calico bgp router reflector, but we'll using node to node mesh configuration, for kubernetes cluster with nodes < 50, shouldn't be an issue.
+in this step, we'll make sure Calico will peer with VyOS by using BGP with Local AS ```64512``` Remote AS ```64567``` , we'll not using calico bgp router reflector, but we'll fullmesh configuration, for kubernetes cluster with nodes < 50, shouldn't be an issue.
 
-NodeToNode Mesh means:
+Full Mesh means:
 
 > * Master will peer with node1, node2 and VyOS
 > * node1 will peer with master, node2 and VyOS
@@ -106,7 +106,7 @@ NodeToNode Mesh means:
 > * VyOS will peer with master, node1 and node2.
 
 
-the first thing to do is to enable nodeToNodeMesh.
+the first thing to do is to disable the default nodeToNodeMesh.
 
 **<u>command to run in m1</u>**
 
