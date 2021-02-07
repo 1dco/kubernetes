@@ -353,7 +353,7 @@ kubectl get namespace -L istio-injection
 
 ## Install Jaeger, Grafana, Prometheus, Zipkin using Quick Start Method.
 
-Jaeger, Grafana, Prometheus, Zipkin can be installed using quick start into istio, but we can also use external jaeger, prometheus, but for this testing, we'll deployed jaeger, grafana into our cluster, by default, during the installation using istio-discovery telemetry is already enabled by default
+Jaeger, Grafana, Prometheus, Zipkin can be installed using quick start into istio, but we can also use external jaeger, prometheus, but for this testing, we'll deployed jaeger, grafana into our cluster, by default, during the installation using istio-discovery telemetry is already enabled by default. Option1. Quick-Start
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/grafana.yaml
