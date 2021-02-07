@@ -295,4 +295,71 @@ EOF'
 kubectl apply -f metallbLayer2.yaml
 ```
 
+## Installing Istio Service Mesh
+
+this step below will install istio in your cluster
+
+binary for istio, current release 1.8.2
+
+```shell
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-1.8.2
+echo "export PATH=$PWD/bin:$PATH" >> ~/.profile
+source ~/.profile
+```
+
+then you'll need to create `istio-system` namespace
+
+```shell
+kubectl create namespace istio-system
+```
+
+next you'll need to install istio base chart for istio control plane
+
+```shell
+helm install -n istio-system istio-base manifests/charts/base
+```
+
+then istio discovery chart current release `1.8.2`
+
+```shell
+helm install -n istio-system istiod manifests/charts/istio-control/istio-discovery --set global.hub="docker.io/istio" --set global.tag="1.8.2"
+```
+
+ingress & egress component
+
+```shell
+helm install -n istio-system istio-ingress manifests/charts/gateways/istio-ingress --set global.hub="docker.io/istio" --set global.tag="1.8.2"
+helm install -n istio-system istio-egress manifests/charts/gateways/istio-egress --set global.hub="docker.io/istio" --set global.tag="1.8.2"
+```
+
+```shell
+kubectl get pods -n istio-system
+```
+
+install kiali-server
+
+```shell
+helm install -n istio-system --set auth.strategy="anonymous" --repo https://kiali.org/helm-charts kiali-server kiali-server
+```
+
+testing istio by creating a new namespace with istio-injection enabled by default
+
+```shell
+kubectl create namespace istio-test
+kubectl label namespace istio-test istio-injection=enabled
+kubectl get namespace -L istio-injection
+```
+
+## Install Jaeger, Grafana, Prometheus, Zipkin using Quick Start Method.
+
+Jaeger, Grafana, Prometheus, Zipkin can be installed using quick start into istio, but we can also use external jaeger, prometheus, but for this testing, we'll deployed jaeger, grafana into our cluster, by default, during the installation using istio-discovery telemetry is already enabled by default
+
+```
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/grafana.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/jaeger.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/prometheus.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/extras/zipkin.yaml
+```
+
 
