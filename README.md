@@ -371,6 +371,11 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/sampl
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/extras/zipkin.yaml
 ```
 
+
+## Test Istio using bookinfo example
+
+
+#### WORK in Progress
 ## Install Registry
 
 before you start this, you need to have at least container storage interface available.
