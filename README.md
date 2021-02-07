@@ -295,6 +295,15 @@ EOF'
 kubectl apply -f metallbLayer2.yaml
 ```
 
+## Install NGINX Ingress Controller
+
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+kubectl create ns nginx-ingress
+helm install ingress-nginx ingress-nginx/ingress-nginx -n nginx-ingress
+```
+
 ## Installing Istio Service Mesh
 
 this step below will install istio in your cluster
@@ -361,5 +370,61 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/sampl
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/prometheus.yaml
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/extras/zipkin.yaml
 ```
+
+## Install Registry
+
+before you start this, you need to have at least container storage interface available.
+
+Install Rook for providing ceph storage, rook require at least 3 nodes for pods scheduling, our solutions contain only 2 nodes, remove the taint from master node and enable it for pod scheduling
+
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/master-
+helm repo add rook-release https://charts.rook.io/release
+kubectl create namespace rook-ceph
+helm install --namespace rook-ceph rook-ceph rook-release/rook-ceph
+
+git clone --single-branch --branch v1.5.5 https://github.com/rook/rook.git
+cd rook/cluster/examples/kubernetes/ceph
+#kubectl create -f crds.yaml -f common.yaml -f operator.yaml
+kubectl apply -f cluster.yaml
+kubectl apply -f toolbox.yaml
+```
+
+verify Rook Installation
+
+```bash
+kubectl -n rook-ceph rollout status deploy/rook-ceph-tools
+```
+
+### Create Storage class
+
+```bash
+cd rook/cluster/examples/kubernetes/ceph/csi/rbd/
+kubectl apply -f storageclass.yaml
+```
+
+set our new storage class as default
+
+```bash
+kubectl patch storageclass rook-ceph-block -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
+after having Rook available to provide storage like `ceph` you can continue to install registry, in this case `Harbor` or `trow`
+
+to install Harbor
+
+```bash
+helm repo add harbor https://helm.goharbor.io
+helm install my-harbor harbor/harbor
+#helm install my-harbor harbor/harbor --set persistence.persistentVolumeClaim.registry.storageClass=rook-ceph-block --set persistence.persistentVolumeClaim.jobservice.storageClass=rook-ceph-block --set persistence.persistentVolumeClaim.database.storageClass=rook-ceph-block --set persistence.persistentVolumeClaim.redis.storageClass=rook-ceph-block --set persistence.persistentVolumeClaim.trivy.storageClass=rook-ceph-block --set persistence.persistentVolumeClaim.chartmuseum.storageClass=rook-ceph-block
+```
+
+to install trow
+
+```bash
+helm repo add trow https://trow.io
+helm install trow trow/trow
+```
+
 
 
