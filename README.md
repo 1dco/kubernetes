@@ -375,7 +375,8 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/sampl
 ## Test Istio using bookinfo example
 
 
-#### WORK in Progress
+# WORK in Progress
+
 ## Install Registry
 
 before you start this, you need to have at least container storage interface available.
