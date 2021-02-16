@@ -374,6 +374,19 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/sampl
 
 ## Test Istio using bookinfo example
 
+this follow the installation based on the current istio release `1.8.2` and installation was done in home folder `~`
+
+```
+# curl -L https://istio.io/downloadIstio | sh -
+cd ~/istio-1.8.2
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+```
+
+follow this step or `https://istio.io/latest/docs/setup/getting-started` for new update
+
+```
+kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
+```
 
 #### WORK in Progress
 ## Install Registry
