@@ -96,15 +96,7 @@ sudo mv calicoctl /usr/local/bin/
 
 ## Configure Calico to use BGP
 
-in this step, we'll make sure Calico will peer with VyOS by using BGP with Local AS ```64512``` Remote AS ```64567``` , we'll not using calico bgp router reflector, but we'll fullmesh configuration, for kubernetes cluster with nodes < 50, shouldn't be an issue.
-
-Full Mesh means:
-
-> * Master will peer with node1, node2 and VyOS
-> * node1 will peer with master, node2 and VyOS
-> * node2 will peer with master, node1 and VyOS
-> * VyOS will peer with master, node1 and node2.
-
+in this step, we'll make sure Calico will peer with VyOS by using BGP with Local AS ```64512``` Remote AS ```64567``` , we'll not using calico bgp router reflector, but we'll using Global BGP Peer peer with every calico node in our deployment.
 
 the first thing to do is to disable the default nodeToNodeMesh.
 
@@ -113,6 +105,8 @@ the first thing to do is to disable the default nodeToNodeMesh.
 ```shell
 calicoctl patch bgpconfiguration default -p '{"spec": {"nodeToNodeMeshEnabled": false}}'
 ```
+
+### Setting the BGP global peer
 
 next we need to prepare ```calicobgp.yaml``` and ```calicobgpipv6.yaml``` , in here you can see the peering IP address will be the IP address of VyOS Router 192.168.4.2 and fc00:1:1:1::2
 
@@ -362,7 +356,9 @@ kubectl get namespace -L istio-injection
 
 ## Install Jaeger, Grafana, Prometheus, Zipkin using Quick Start Method.
 
-Jaeger, Grafana, Prometheus, Zipkin can be installed using quick start into istio, but we can also use external jaeger, prometheus, but for this testing, we'll deployed jaeger, grafana into our cluster, by default, during the installation using istio-discovery telemetry is already enabled by default. Option1. Quick-Start
+Jaeger, Grafana, Prometheus, Zipkin can be installed using Option 1: Quick Start into istio cluster, but we can also use external jaeger, prometheus, but for the sake of this testing, we'll deployed jaeger, grafana into our cluster, using Quick Start.
+
+by default, during the installation using istio-discovery telemetry is already enabled.
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/addons/grafana.yaml
@@ -388,7 +384,8 @@ follow this step or `https://istio.io/latest/docs/setup/getting-started` for new
 kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
 ```
 
-#### WORK in Progress
+# WORK in Progress
+
 ## Install Registry
 
 before you start this, you need to have at least container storage interface available.
