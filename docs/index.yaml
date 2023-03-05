@@ -3,21 +3,21 @@ entries:
   nginx-chart:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-03-05T20:06:41.298259+01:00"
+    created: "2023-03-05T20:10:21.622913+01:00"
     description: My First Helm Chart
-    digest: e652a1ea8278e2c00c5381749f0454019014c431fec45c3f10536be521e7e33d
+    digest: ddbf1b46710d59c78ad779cf0a68371cb2e2e4c3c909bc972d7c3c21205e22dc
     maintainers:
     - email: 1dco@github.com
       name: 1dco
     name: nginx-chart
     type: application
     urls:
-    - https://1dco.github.io/kubernetes/nginx-chart-0.1.2.tgz
-    version: 0.1.2
+    - https://1dco.github.io/kubernetes/nginx-chart-0.1.3.tgz
+    version: 0.1.3
   podinfo:
   - apiVersion: v1
     appVersion: 6.3.4
-    created: "2023-03-05T20:06:41.299585+01:00"
+    created: "2023-03-05T20:10:21.625849+01:00"
     description: Podinfo Helm chart for Kubernetes
     digest: 67400802583a19e63dddf5c7dc1bc0ae5a113401268d97d28859b99e9f39ec63
     home: https://github.com/stefanprodan/podinfo
@@ -31,4 +31,4 @@ entries:
     urls:
     - https://1dco.github.io/kubernetes/podinfo-6.3.4.tgz
     version: 6.3.4
-generated: "2023-03-05T20:06:41.297603+01:00"
+generated: "2023-03-05T20:10:21.622407+01:00"
