@@ -3,7 +3,7 @@ entries:
   nginx-chart:
   - apiVersion: v2
     appVersion: 1.0.1
-    created: "2023-03-05T20:31:03.04524+01:00"
+    created: "2023-03-12T20:44:12.445766+01:00"
     description: My First Helm Chart
     digest: d6f8f807a18020dcccebd8ac4289dd1f8efd45b6f6a60cb1a9785b50241ccf0b
     maintainers:
@@ -16,19 +16,14 @@ entries:
     version: 0.1.5
   podinfo:
   - apiVersion: v1
-    appVersion: 6.3.4
-    created: "2023-03-05T20:31:03.046508+01:00"
+    appVersion: 6.3.5
+    created: "2023-03-12T20:44:12.447259+01:00"
     description: Podinfo Helm chart for Kubernetes
-    digest: 67400802583a19e63dddf5c7dc1bc0ae5a113401268d97d28859b99e9f39ec63
-    home: https://github.com/stefanprodan/podinfo
+    digest: bbd1d6eb6963e2079f8611b4813f9ef97ef71f9fe21b0eaae8c23735f89115c4
+    home: https://github.com/1dco/podinfo
     kubeVersion: '>=1.23.0-0'
-    maintainers:
-    - email: stefanprodan@users.noreply.github.com
-      name: stefanprodan
     name: podinfo
-    sources:
-    - https://github.com/stefanprodan/podinfo
     urls:
-    - https://1dco.github.io/kubernetes/podinfo-6.3.4.tgz
-    version: 6.3.4
-generated: "2023-03-05T20:31:03.04473+01:00"
+    - https://1dco.github.io/kubernetes/podinfo-6.3.5.tgz
+    version: 6.3.5
+generated: "2023-03-12T20:44:12.445307+01:00"
